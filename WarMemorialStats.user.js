@@ -11,7 +11,7 @@
 // @include     /^https?://www\.geocaching\.com/(account|my|default|geocache|profile|seek/cache_details|p)/
 // @exclude     /^https?://www\.geocaching\.com/(login|about|articles|myfriends|account/*)/
 // @version     0.0.1
-// @supportURL	https://github.com/Cryo99/AFinePairStats
+// @supportURL	https://github.com/Cryo99/WarMemorialStats
 // @require     https://openuserjs.org/src/libs/sizzle/GM_config.js
 // @grant       GM_xmlhttpRequest
 // @grant       GM_registerMenuCommand
@@ -23,9 +23,9 @@
 (function (){
 	"use strict";
 	var cacheName = document.getElementById("ctl00_ContentBody_CacheName"),
-		wmCSS = document.createElement("style"),
-		// AFP images can be wider when level names are long. overflow: hidden; on wm-container prevents images from overlaying the div border.
-		css = 'div.wm-container { border: 1px solid #b0b0b0; margin-top: 1.5em; padding: 0; text-align: center; overflow: hidden;} .WidgetBody div.wm-container { border: none; } #ctl00_ContentBody_ProfilePanel1_pnlProfile div.wm-container { border: none; text-align: inherit;} a.wm-badge { background-color: white;} #ctl00_ContentBody_ProfilePanel1_pnlProfile div.wm-container {float: left}',
+		wmsCSS = document.createElement("style"),
+		// WMS images can be wider when level names are long. overflow: hidden; on wms-container prevents images from overlaying the div border.
+		css = 'div.wms-container { border: 1px solid #b0b0b0; margin-top: 1.5em; padding: 0; text-align: center; overflow: hidden;} .WidgetBody div.wms-container { border: none; } #ctl00_ContentBody_ProfilePanel1_pnlProfile div.wms-container { border: none; text-align: inherit;} a.wms-badge { background-color: white;} #ctl00_ContentBody_ProfilePanel1_pnlProfile div.wms-container {float: left}',
 		currentPage,
 		profileNameOld = document.getElementById("ctl00_ContentBody_ProfilePanel1_lblMemberName"),
 		profileName = document.getElementById("ctl00_ProfileHead_ProfileHeader_lblMemberName"),
@@ -37,7 +37,7 @@
 
 	function displayStats(stats, page, brand){
 		function getHtml(uname, brand){
-			return "<a class='wm-badge' href='https://www.warmemorialseries.co.uk/' title='War Memorial Series stats.'><img src='https://img.warmemorialseries.co.uk/awards/find-badge.php?name=" + uname + "&brand=" + brand + "' /></a>";
+			return "<a class='wms-badge' href='https://www.warmemorialseries.co.uk/' title='War Memorial Series stats.'><img src='https://img.warmemorialseries.co.uk/awards/find-badge.php?name=" + uname + "&brand=" + brand + "' /></a>";
 		}
 		var afpWidget = document.createElement("div"),
 			html = "",
@@ -82,7 +82,7 @@
 		}
 
 		if(html){
-			afpWidget.className = "wm-container";
+			afpWidget.className = "wms-container";
 			afpWidget.innerHTML = html;
             switch(page){
                 case "my":
@@ -140,7 +140,7 @@
 	}else{
 		if(cacheName){
 			// On a Geocache page...
-			if(!/War Memorial/i.test(cacheName.innerHTML)){
+			if(!/War Memorial/i.test(cacheName.innerHTML)){            //************** FIX THIS
 				// ...but not a War Memorial Series cache
 				return;
 			}
@@ -151,7 +151,7 @@
 	}
 
 	// We're going to display so we can announce ourselves and prepare the dialogue.
-	console.info("A Fine Pair Stats V" + GM_info.script.version);
+	console.info("War Memorial Series Stats V" + GM_info.script.version);
 
     //******* Configuration dialogue *******
 	// Register the menu item.
@@ -160,10 +160,10 @@
 	}, 'S');
 
 	GM_config.init({
-		'id': 'wm_config', // The id used for this instance of GM_config
+		'id': 'wms_config', // The id used for this instance of GM_config
 		'title': 'War Memorial Series Stats', // Panel Title
 		'fields': { // Fields object
-			'wm_branding': { // This is the id of the field
+			'wms_branding': { // This is the id of the field
 				'label': 'Branding', // Appears next to field
 				'type': 'select', // Makes this setting a dropdown
 				'options': ['Characters', 'None', 'Ranks'], // Possible choices
@@ -171,7 +171,7 @@
 			}
 		},
 		// Dialogue internal styles.
-		'css': '#wm_config {position: static !important; width: 75% !important; margin: 1.5em auto !important; border: 10 !important;} #wm_config_wm_branding_var {padding-top: 30px;}',
+		'css': '#wms_config {position: static !important; width: 75% !important; margin: 1.5em auto !important; border: 10 !important;} #wms_config_wms_branding_var {padding-top: 30px;}',
 		'events': {
 			'open': function(document, window, frame){
 				// iframe styles.
@@ -183,15 +183,16 @@
 				frame.style.borderColor = '#999999';
 			},
 			'save': function(){
-				GM_setValue('wm_branding', GM_config.get('wm_branding'));
+				GM_setValue('wms_branding', GM_config.get('wms_branding'));
 				location.reload();                              // reload the page when configuration was changed
 			}
 		}
 	});
 
-	var brand = GM_getValue('wm_branding', 'Ranks');
+	var brand = GM_getValue('wms_branding', 'Ranks');
 	console.info("War Memorial Series Stats branding: " + brand);
-	brand = brand.toLowerCase()
+	// (Sigh) No 's' in character in the URL param.
+	brand = (brand == 'Characters') ? brand.slice(0, brand.length - 1).toLowerCase() : brand.toLowerCase()
     //**************************************
 
     var hider;
@@ -225,12 +226,12 @@
 	}
 
 	// Inject widget styling
-	wmCSS.type = 'text/css';
-	if(wmCSS.styleSheet){
-		wmCSS.styleSheet.cssText = css;
+	wmsCSS.type = 'text/css';
+	if(wmsCSS.styleSheet){
+		wmsCSS.styleSheet.cssText = css;
 	}else{
-		wmCSS.appendChild(document.createTextNode(css));
+		wmsCSS.appendChild(document.createTextNode(css));
 	}
-	document.head.appendChild(wmCSS);
+	document.head.appendChild(wmsCSS);
 	displayStats(stats, currentPage, brand);
 }());
