@@ -6,11 +6,11 @@
 // @copyright   2019, Cryo99
 // @attribution War Memorial Series stats provided by Chris AKA Bus.Stop (https://www.warmemorialseries.co.uk/)
 // @attribution Icon image extracted from the War Memorial Series banner by Chris AKA Bus.Stop
-// @icon        https://raw.githubusercontent.com/Cryo99/AFinePairStats/master/icon48.png
-// @icon64      https://raw.githubusercontent.com/Cryo99/AFinePairStats/master/icon64.png
+// @icon        https://raw.githubusercontent.com/Cryo99/WarMemorialStats/master/icon48.png
+// @icon64      https://raw.githubusercontent.com/Cryo99/WarMemorialStats/master/icon64.png
 // @include     /^https?://www\.geocaching\.com/(account|my|default|geocache|profile|seek/cache_details|p)/
 // @exclude     /^https?://www\.geocaching\.com/(login|about|articles|myfriends|account/*)/
-// @version     0.0.1
+// @version     0.0.2
 // @supportURL	https://github.com/Cryo99/WarMemorialStats
 // @require     https://openuserjs.org/src/libs/sizzle/GM_config.js
 // @grant       GM_xmlhttpRequest
@@ -23,9 +23,9 @@
 (function (){
 	"use strict";
 	var cacheName = document.getElementById("ctl00_ContentBody_CacheName"),
-		wmsCSS = document.createElement("style"),
-		// WMS images can be wider when level names are long. overflow: hidden; on wms-container prevents images from overlaying the div border.
-		css = 'div.wms-container { border: 1px solid #b0b0b0; margin-top: 1.5em; padding: 0; text-align: center; overflow: hidden;} .WidgetBody div.wms-container { border: none; } #ctl00_ContentBody_ProfilePanel1_pnlProfile div.wms-container { border: none; text-align: inherit;} a.wms-badge { background-color: white;} #ctl00_ContentBody_ProfilePanel1_pnlProfile div.wms-container {float: left}',
+		wmCSS = document.createElement("style"),
+		// WMS images can be wider when level names are long. overflow: hidden; on wm-container prevents images from overlaying the div border.
+		css = 'div.wm-container { border: 1px solid #b0b0b0; margin-top: 1.5em; padding: 0; text-align: center; overflow: hidden;} .WidgetBody div.wm-container { border: none; } #ctl00_ContentBody_ProfilePanel1_pnlProfile div.wm-container { border: none; text-align: inherit;} a.wm-badge { background-color: white;} #ctl00_ContentBody_ProfilePanel1_pnlProfile div.wm-container {float: left}',
 		currentPage,
 		profileNameOld = document.getElementById("ctl00_ContentBody_ProfilePanel1_lblMemberName"),
 		profileName = document.getElementById("ctl00_ProfileHead_ProfileHeader_lblMemberName"),
@@ -37,7 +37,7 @@
 
 	function displayStats(stats, page, brand){
 		function getHtml(uname, brand){
-			return "<a class='wms-badge' href='https://www.warmemorialseries.co.uk/' title='War Memorial Series stats.'><img src='https://img.warmemorialseries.co.uk/awards/find-badge.php?name=" + uname + "&brand=" + brand + "' /></a>";
+			return "<a class='wm-badge' href='https://www.warmemorialseries.co.uk/' title='War Memorial Series stats.'><img src='https://img.warmemorialseries.co.uk/awards/find-badge.php?name=" + uname + "&brand=" + brand + "' /></a>";
 		}
 		var afpWidget = document.createElement("div"),
 			html = "",
@@ -82,7 +82,7 @@
 		}
 
 		if(html){
-			afpWidget.className = "wms-container";
+			afpWidget.className = "wm-container";
 			afpWidget.innerHTML = html;
             switch(page){
                 case "my":
@@ -140,7 +140,7 @@
 	}else{
 		if(cacheName){
 			// On a Geocache page...
-			if(!/War Memorial/i.test(cacheName.innerHTML)){            //************** FIX THIS
+			if(!/War Memorial #/i.test(cacheName.innerHTML) && !/Lest we Forget #/i.test(cacheName.innerHTML) && !/W.M.\#/i.test(cacheName.innerHTML) && !/WM #/i.test(cacheName.innerHTML)){
 				// ...but not a War Memorial Series cache
 				return;
 			}
@@ -160,10 +160,10 @@
 	}, 'S');
 
 	GM_config.init({
-		'id': 'wms_config', // The id used for this instance of GM_config
+		'id': 'wm_config', // The id used for this instance of GM_config
 		'title': 'War Memorial Series Stats', // Panel Title
 		'fields': { // Fields object
-			'wms_branding': { // This is the id of the field
+			'wm_branding': { // This is the id of the field
 				'label': 'Branding', // Appears next to field
 				'type': 'select', // Makes this setting a dropdown
 				'options': ['Characters', 'None', 'Ranks'], // Possible choices
@@ -171,7 +171,7 @@
 			}
 		},
 		// Dialogue internal styles.
-		'css': '#wms_config {position: static !important; width: 75% !important; margin: 1.5em auto !important; border: 10 !important;} #wms_config_wms_branding_var {padding-top: 30px;}',
+		'css': '#wm_config {position: static !important; width: 75% !important; margin: 1.5em auto !important; border: 10 !important;} #wm_config_wm_branding_var {padding-top: 30px;}',
 		'events': {
 			'open': function(document, window, frame){
 				// iframe styles.
@@ -183,13 +183,13 @@
 				frame.style.borderColor = '#999999';
 			},
 			'save': function(){
-				GM_setValue('wms_branding', GM_config.get('wms_branding'));
+				GM_setValue('wm_branding', GM_config.get('wm_branding'));
 				location.reload();                              // reload the page when configuration was changed
 			}
 		}
 	});
 
-	var brand = GM_getValue('wms_branding', 'Ranks');
+	var brand = GM_getValue('wm_branding', 'Ranks');
 	console.info("War Memorial Series Stats branding: " + brand);
 	// (Sigh) No 's' in character in the URL param.
 	brand = (brand == 'Characters') ? brand.slice(0, brand.length - 1).toLowerCase() : brand.toLowerCase()
@@ -226,12 +226,12 @@
 	}
 
 	// Inject widget styling
-	wmsCSS.type = 'text/css';
-	if(wmsCSS.styleSheet){
-		wmsCSS.styleSheet.cssText = css;
+	wmCSS.type = 'text/css';
+	if(wmCSS.styleSheet){
+		wmCSS.styleSheet.cssText = css;
 	}else{
-		wmsCSS.appendChild(document.createTextNode(css));
+		wmCSS.appendChild(document.createTextNode(css));
 	}
-	document.head.appendChild(wmsCSS);
+	document.head.appendChild(wmCSS);
 	displayStats(stats, currentPage, brand);
 }());

@@ -6,9 +6,11 @@ A userscript that shows War Memorial Series cache stats on geocaching.com. It ad
 * the sidebar of your account dashboard (new UI)
 * your public profile, if it doesn't already exist there (old and new UIs);
 * other users' profiles, if it doesn't already exist there (old and new UIs);
-* SideTracked cache pages.
+* War Memorial Series cache pages.
 
 On cache pages it adds the C. O.'s banner as well.
+
+**Please note:** War Memorial Series caches have a range of names and are harder to match. If you find one that doesn't display the banner, please let me know so I can include it.
 
 ## Credits
 
@@ -19,6 +21,11 @@ __Please note:__ in order for the banner to be added to your public profile, you
 __Update:__ This should no longer be true in the new UI.
 
 ## Version History
+
+### Version 0.0.2
+
+* Improved cache matching for the various names used in the series.
+* Internal changes.
 
 ### Version 0.0.1
 
