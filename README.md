@@ -22,6 +22,10 @@ __Update:__ This should no longer be true in the new UI.
 
 ## Version History
 
+### Version 0.0.3
+
+* Internal changes.
+
 ### Version 0.0.2
 
 * Improved cache matching for the various names used in the series.

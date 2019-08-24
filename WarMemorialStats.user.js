@@ -10,7 +10,7 @@
 // @icon64      https://raw.githubusercontent.com/Cryo99/WarMemorialStats/master/icon64.png
 // @include     /^https?://www\.geocaching\.com/(account|my|default|geocache|profile|seek/cache_details|p)/
 // @exclude     /^https?://www\.geocaching\.com/(login|about|articles|myfriends|account/*)/
-// @version     0.0.2
+// @version     0.0.3
 // @supportURL	https://github.com/Cryo99/WarMemorialStats
 // @require     https://openuserjs.org/src/libs/sizzle/GM_config.js
 // @grant       GM_xmlhttpRequest
@@ -39,7 +39,7 @@
 		function getHtml(uname, brand){
 			return "<a class='wm-badge' href='https://www.warmemorialseries.co.uk/' title='War Memorial Series stats.'><img src='https://img.warmemorialseries.co.uk/awards/find-badge.php?name=" + uname + "&brand=" + brand + "' /></a>";
 		}
-		var afpWidget = document.createElement("div"),
+		var wmsWidget = document.createElement("div"),
 			html = "",
 			i,
 			target;
@@ -82,15 +82,15 @@
 		}
 
 		if(html){
-			afpWidget.className = "wm-container";
-			afpWidget.innerHTML = html;
+			wmsWidget.className = "wm-container";
+			wmsWidget.innerHTML = html;
             switch(page){
                 case "my":
                 case "profile":
-                    target.parentNode.insertBefore(afpWidget, target.nextSibling);
+                    target.parentNode.insertBefore(wmsWidget, target.nextSibling);
                     break;
                 default:
-                    target.insertBefore(afpWidget, target.firstChild.nextSibling.nextSibling);
+                    target.insertBefore(wmsWidget, target.firstChild.nextSibling.nextSibling);
                     break;
             }
         }else{
